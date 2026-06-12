@@ -15,10 +15,13 @@ public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID userId;
+    @Column(nullable = false)
     private String email;
-    private String password_hash;
-    private String full_name;
+    @Column(nullable = false)
+    private String passwordHash;
+    private String fullName;
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
 }

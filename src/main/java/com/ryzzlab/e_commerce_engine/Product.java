@@ -17,13 +17,15 @@ public class Product extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID productId;
     @ManyToOne
-    @JoinColumn(name = "shopId")
+    @JoinColumn(name = "shop_id")
     private Shop shop;
+    @Column(nullable = false)
     private String name;
     private String description;
     private String imageUrl;
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price ;
+    @Column(nullable = false)
     private Integer stockQuantity;
     private Integer sold;
 

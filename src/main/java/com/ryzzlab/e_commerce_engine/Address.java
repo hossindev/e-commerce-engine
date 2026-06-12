@@ -17,11 +17,15 @@ public class Address extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID addressId;
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User user;
+    @Column(nullable = false)
     private String street;
+    @Column(nullable = false)
     private String city;
+    @Column(nullable = false)
     private String postalCode;
+    @Column(nullable = false)
     private String country ;
     private boolean isDefault;
 }

@@ -16,13 +16,13 @@ public class ShopCustomization extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID shop_customization_id;
     @OneToOne
-    @JoinColumn(name = "shopId", unique = true)
+    @JoinColumn(name = "shop_id", unique = true)
     private Shop shop;
-    private String logo_url;
-    private String banner_url;
+    private String logoUrl;
+    private String bannerUrl;
     private String tagline;
-    private String primary_color;
-    private String secondary_color;
+    private String primaryColor;
+    private String secondaryColor;
     private String font;
 
 }

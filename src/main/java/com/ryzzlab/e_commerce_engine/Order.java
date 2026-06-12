@@ -17,15 +17,17 @@ public class Order extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID orderId;
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User user;
     @ManyToOne
-    @JoinColumn(name = "shopId")
+    @JoinColumn(name = "shop_id")
     private Shop shop;
     @ManyToOne
-    @JoinColumn(name = "addressId")
+    @JoinColumn(name = "address_id")
     private Address address;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status;
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal totalPrice ;
 

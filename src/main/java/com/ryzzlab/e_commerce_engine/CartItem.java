@@ -16,13 +16,13 @@ public class CartItem  extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID cartId;
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User user;
     @ManyToOne
-    @JoinColumn(name = "shopId")
+    @JoinColumn(name = "shop_id")
     private Shop shop;
     @ManyToOne
-    @JoinColumn(name = "productId")
+    @JoinColumn(name = "product_id")
     private Product product;
     private Integer quantity;
 
