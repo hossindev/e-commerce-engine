@@ -14,7 +14,7 @@ import java.util.UUID;
 public class ShopCustomization extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID shop_customization_id;
+    private UUID shopCustomizationId;
     @OneToOne
     @JoinColumn(name = "shop_id", unique = true)
     private Shop shop;
