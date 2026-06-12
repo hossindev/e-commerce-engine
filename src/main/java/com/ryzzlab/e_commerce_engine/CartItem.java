@@ -10,17 +10,20 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "shops")
-public class Shop extends BaseEntity {
+@Table(name = "cart_items")
+public class CartItem  extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID shopId;
+    private UUID cartId;
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;
-    private String subdomain;
-    private String name;
-    private String description;
-    private String templateName;
+    @ManyToOne
+    @JoinColumn(name = "shopId")
+    private Shop shop;
+    @ManyToOne
+    @JoinColumn(name = "productId")
+    private Product product;
+    private Integer quantity;
 
 }

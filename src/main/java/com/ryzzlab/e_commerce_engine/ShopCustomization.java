@@ -11,12 +11,12 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "shop_customization")
-public class Shop_customization {
+public class ShopCustomization extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID shop_customization_id;
-    @ManyToOne
-    @JoinColumn(name = "shopId")
+    @OneToOne
+    @JoinColumn(name = "shopId", unique = true)
     private Shop shop;
     private String logo_url;
     private String banner_url;
@@ -24,5 +24,5 @@ public class Shop_customization {
     private String primary_color;
     private String secondary_color;
     private String font;
-    private LocalDateTime updated_at;
+
 }

@@ -21,7 +21,7 @@ public class Address {
     private User user;
     private String street;
     private String city;
-    private String postal_code;
+    private String postalCode;
     private String country ;
-    private boolean is_default;
+    private boolean isDefault;
 }

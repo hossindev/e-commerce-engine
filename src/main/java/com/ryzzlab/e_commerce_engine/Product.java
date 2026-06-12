@@ -12,7 +12,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "products")
-public class Product {
+public class Product extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID productId;
@@ -21,10 +21,10 @@ public class Product {
     private Shop shop;
     private String name;
     private String description;
-    private String image_url;
+    private String imageUrl;
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price ;
-    private Integer stock_quantity;
+    private Integer stockQuantity;
     private Integer sold;
-    private LocalDateTime created_at;
+
 }

@@ -12,16 +12,16 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "cart_items")
-public class CartItems {
+public class OrderItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID cartId;
     @ManyToOne
-    @JoinColumn(name = "userId")
-    private User user;
+    @JoinColumn(name = "orderId")
+    private Order order;
     @ManyToOne
-    @JoinColumn(name = "shopId")
-    private Shop shop;
+    @JoinColumn(name = "productId")
+    private Product product;
     private Integer quantity;
-    private LocalDateTime added_at;
+    @Column(precision = 10, scale = 2)
+    private BigDecimal unitPrice;
+
 }

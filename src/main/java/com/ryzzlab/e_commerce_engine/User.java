@@ -11,13 +11,14 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "users")
-public class User {
+public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID userId;
     private String email;
     private String password_hash;
     private String full_name;
-    private String role = "user" ;
-    private LocalDateTime created_at;
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
 }
