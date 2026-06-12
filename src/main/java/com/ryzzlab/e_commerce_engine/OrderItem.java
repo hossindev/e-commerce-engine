@@ -11,17 +11,22 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "cart_items")
-public class OrderItem {
+@Table(name = "order_items")
+public class OrderItem extends BaseEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     @ManyToOne
     @JoinColumn(name = "orderId")
     private Order order;
     @ManyToOne
     @JoinColumn(name = "productId")
+
     private Product product;
+    @Column(nullable = false)
     private Integer quantity;
-    @Column(precision = 10, scale = 2)
+
+    @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal unitPrice;
 
 }
