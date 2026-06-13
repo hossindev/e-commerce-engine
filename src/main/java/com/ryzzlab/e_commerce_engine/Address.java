@@ -17,8 +17,8 @@ public class Address extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID addressId;
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "customer_id")
+    private ShopCustomer shopCustomer;
     @Column(nullable = false)
     private String street;
     @Column(nullable = false)

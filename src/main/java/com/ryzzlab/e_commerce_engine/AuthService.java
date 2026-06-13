@@ -12,7 +12,56 @@ public class AuthService {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    public void registerBuyer(String email,String password, String fullName){
+    @Autowired
+    private ShopCustomerRepository shopCustomerRepository;
+    @Autowired
+    private ShopRepository shopRepository;
+    public String  registerBuyer(String email,String password, String fullName,String subdomain){
 
+        Shop shop = shopRepository.findBySubdomain(subdomain).orElseThrow();
+
+        if(shopCustomerRepository.findByEmailAndShop(email,shop).isPresent()){
+            throw new AppException("User already has an account", 409);
+        }
+        ShopCustomer user = new ShopCustomer();
+        user.setEmail(email);
+        user.setPasswordHash(passwordEncoder.encode(password));
+        user.setFullName(fullName);
+        shopCustomerRepository.save(user);
+        String token = jwtUtil.generateToken(user.getId().toString());
+        return token;
     }
+    public String  loginBuyer(String email,String password, String subdomain){
+        Shop shop = shopRepository.findBySubdomain(subdomain).orElseThrow();
+        ShopCustomer shopCustomer = shopCustomerRepository.findByEmailAndShop(email,shop).orElseThrow();
+        if(!passwordEncoder.matches(password, shopCustomer.getPasswordHash())){
+            throw new AppException("Invalid credentials", 401);
+        }
+        String token = jwtUtil.generateToken(shopCustomer.getId().toString());
+        return token;
+    }
+
+    public String registerOwner(String email,String password, String fullName){
+        if(userRepository.findByEmail(email).isPresent()){
+            throw new AppException("User already has an account", 409);
+        }
+        User user = new User();
+        user.setEmail(email);
+        user.setPasswordHash(passwordEncoder.encode(password));
+        user.setFullName(fullName);
+
+        userRepository.save(user);
+        String token = jwtUtil.generateToken(user.getUserId().toString());
+        return token;
+    }
+    public String  loginOwner(String email,String password){
+
+        User user = userRepository.findByEmail(email).orElseThrow();
+        if(!passwordEncoder.matches(password, user.getPasswordHash())){
+            throw new AppException("Invalid credentials", 401);
+        }
+        String token = jwtUtil.generateToken(user.getUserId().toString());
+        return token;
+    }
+
 }
