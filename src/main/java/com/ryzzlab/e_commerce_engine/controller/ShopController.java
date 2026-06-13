@@ -41,7 +41,7 @@ public class ShopController {
             String primaryColor = request.getPrimaryColor();
             String secondaryColor = request.getSecondaryColor();
             String font = request.getFont();
-            return ResponseEntity.ok(shopService.updateCustomization(shopId,userId,tagline,logoUrl,bannerUrl,primaryColor,secondaryColor,font));
+            return ResponseEntity.ok(shopService.updateCustomization(shopId,userId, logoUrl,bannerUrl, tagline, primaryColor,secondaryColor,font ));
         }
         catch (AppException e){
             return ResponseEntity.status(e.getStatus()).body(e.getMessage());

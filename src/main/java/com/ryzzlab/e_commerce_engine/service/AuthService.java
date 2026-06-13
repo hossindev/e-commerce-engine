@@ -67,7 +67,7 @@ public class AuthService {
     }
     public String  loginOwner(String email,String password){
 
-        User user = userRepository.findByEmail(email).orElseThrow();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException("Invalid credentials", 401));
         if(!passwordEncoder.matches(password, user.getPasswordHash())){
             throw new AppException("Invalid credentials", 401);
         }
