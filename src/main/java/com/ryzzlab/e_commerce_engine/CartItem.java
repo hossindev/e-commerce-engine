@@ -16,8 +16,8 @@ public class CartItem  extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID cartId;
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "customer_id")
+    private ShopCustomer shopCustomer;
     @ManyToOne
     @JoinColumn(name = "shop_id")
     private Shop shop;
