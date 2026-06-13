@@ -27,13 +27,16 @@ public class AuthService {
         user.setEmail(email);
         user.setPasswordHash(passwordEncoder.encode(password));
         user.setFullName(fullName);
+        user.setShop(shop);
         shopCustomerRepository.save(user);
         String token = jwtUtil.generateToken(user.getId().toString());
         return token;
     }
     public String  loginBuyer(String email,String password, String subdomain){
-        Shop shop = shopRepository.findBySubdomain(subdomain).orElseThrow();
-        ShopCustomer shopCustomer = shopCustomerRepository.findByEmailAndShop(email,shop).orElseThrow();
+        Shop shop = shopRepository.findBySubdomain(subdomain)
+                .orElseThrow(() -> new AppException("Shop not found", 404));
+        ShopCustomer shopCustomer = shopCustomerRepository.findByEmailAndShop(email, shop)
+                .orElseThrow(() -> new AppException("Invalid credentials", 401));
         if(!passwordEncoder.matches(password, shopCustomer.getPasswordHash())){
             throw new AppException("Invalid credentials", 401);
         }

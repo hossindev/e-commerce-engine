@@ -21,7 +21,7 @@ public class AuthController {
         try {
             String token = authService.registerOwner(request.getEmail(), request.getPassword(), request.getFullName());
             AuthResponse response = new AuthResponse(token);
-            return ResponseEntity.ok(Map.of("token", token));
+            return ResponseEntity.ok(response);
         }
         catch (AppException e ){
             return ResponseEntity.status(e.getStatus()).body(e.getMessage());
@@ -32,7 +32,7 @@ public class AuthController {
         try{
             String token = authService.loginOwner(request.getEmail(), request.getPassword());
             AuthResponse response = new AuthResponse(token);
-            return ResponseEntity.ok(Map.of("token", token));
+            return ResponseEntity.ok(response);
         }
         catch (AppException e ){
             return ResponseEntity.status(e.getStatus()).body(e.getMessage());
@@ -43,7 +43,7 @@ public class AuthController {
         try {
             String token = authService.registerBuyer(request.getEmail(), request.getPassword(), request.getFullName(), request.subdomain);
             AuthResponse response = new AuthResponse(token);
-            return ResponseEntity.ok(Map.of("token", token));
+            return ResponseEntity.ok(response);
         }
         catch (AppException e ){
             return ResponseEntity.status(e.getStatus()).body(e.getMessage());
@@ -54,7 +54,7 @@ public class AuthController {
         try{
             String token = authService.loginBuyer(request.getEmail(), request.getPassword(), request.subdomain);
             AuthResponse response = new AuthResponse(token);
-            return ResponseEntity.ok(Map.of("token", token));
+            return ResponseEntity.ok(response);
         }
         catch (AppException e ){
             return ResponseEntity.status(e.getStatus()).body(e.getMessage());
