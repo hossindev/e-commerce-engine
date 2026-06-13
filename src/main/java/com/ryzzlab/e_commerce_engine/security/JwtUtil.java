@@ -1,4 +1,4 @@
-package com.ryzzlab.e_commerce_engine;
+package com.ryzzlab.e_commerce_engine.security;
 
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;

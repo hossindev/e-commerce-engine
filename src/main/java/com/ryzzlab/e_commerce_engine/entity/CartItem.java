@@ -1,17 +1,16 @@
-package com.ryzzlab.e_commerce_engine;
+package com.ryzzlab.e_commerce_engine.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "cart_items")
-public class CartItem  extends BaseEntity{
+public class CartItem  extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID cartId;

@@ -1,4 +1,4 @@
-package com.ryzzlab.e_commerce_engine;
+package com.ryzzlab.e_commerce_engine.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

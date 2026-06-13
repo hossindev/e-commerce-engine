@@ -1,4 +1,4 @@
-package com.ryzzlab.e_commerce_engine;
+package com.ryzzlab.e_commerce_engine.exception;
 
 public class AppException extends RuntimeException {
     private final int status;

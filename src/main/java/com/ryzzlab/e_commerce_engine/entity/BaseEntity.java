@@ -1,4 +1,4 @@
-package com.ryzzlab.e_commerce_engine;
+package com.ryzzlab.e_commerce_engine.entity;
 
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;

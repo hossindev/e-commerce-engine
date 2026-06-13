@@ -1,4 +1,4 @@
-package com.ryzzlab.e_commerce_engine;
+package com.ryzzlab.e_commerce_engine.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
