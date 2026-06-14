@@ -27,5 +27,7 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private Integer stockQuantity;
     private Integer sold;
+    @Column(nullable = false)
+    private String slug;
 
 }
