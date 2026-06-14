@@ -83,4 +83,9 @@ public class ProductService {
                 .map(this::mapToResponse)
                 .toList();
     }
+    public ProductResponse getProductBySlug(String subdomain,String slug){
+        Shop shop = shopRepository.findBySubdomain(subdomain).orElseThrow(()-> new AppException("Shop not found",404));
+        Product product= productRepository.findByShopAndSlug(shop,slug).orElseThrow(()-> new AppException("product not found",404));
+        return mapToResponse(product);
+    }
 }

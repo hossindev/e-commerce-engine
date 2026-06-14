@@ -69,4 +69,13 @@ public class ProductController {
             return ResponseEntity.status(e.getStatus()).body(e.getMessage());
         }
     }
+    @GetMapping("/{subdomain}/{slug}")
+    public ResponseEntity<?> getProduct(@PathVariable String subdomain,@PathVariable String slug){
+        try{
+            return ResponseEntity.ok(productService.getProductBySlug(subdomain,slug));
+        }
+        catch (AppException e){
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        }
+    }
 }
