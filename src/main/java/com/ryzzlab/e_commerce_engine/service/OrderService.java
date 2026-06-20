@@ -4,15 +4,17 @@ import com.ryzzlab.e_commerce_engine.dto.OrderItemResponse;
 import com.ryzzlab.e_commerce_engine.dto.OrderResponse;
 import com.ryzzlab.e_commerce_engine.entity.*;
 import com.ryzzlab.e_commerce_engine.exception.AppException;
-import com.ryzzlab.e_commerce_engine.repository.ShopCustomerRepository;
-import com.ryzzlab.e_commerce_engine.repository.ShopRepository;
+import com.ryzzlab.e_commerce_engine.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -20,7 +22,16 @@ public class OrderService {
     private ShopCustomerRepository shopCustomerRepository;
     @Autowired
     private ShopRepository shopRepository;
-    private OrderItemResponse mapToOrderItemResponse(OrderItem item){
+    @Autowired
+    private CartItemRepository cartItemRepository;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private OrderItemRepository orderItemRepository;
+    @Autowired
+    private ProductRepository productRepository;
+
+    private OrderItemResponse mapToOrderItemResponse(OrderItem item) {
         OrderItemResponse response = new OrderItemResponse();
         response.setProductName(item.getProduct().getName());
         response.setSlug(item.getProduct().getSlug());
@@ -29,7 +40,8 @@ public class OrderService {
         response.setLineTotal(item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
         return response;
     }
-    private OrderResponse mapToResponse(Order order, List<OrderItem> orderItems){
+
+    private OrderResponse mapToResponse(Order order, List<OrderItem> orderItems) {
         OrderResponse response = new OrderResponse();
         response.setOrderId(order.getOrderId());
         response.setStatus(String.valueOf(order.getStatus()));
@@ -38,9 +50,57 @@ public class OrderService {
         response.setOrderItems(orderItems.stream().map(this::mapToOrderItemResponse).toList());
         return response;
     }
+
     @Transactional
-    public OrderResponse placeOrder(UUID customerId,String subdomain){
-        ShopCustomer shopCustomer = shopCustomerRepository.findById(customerId).orElseThrow(()->new AppException("user not found",404));
-        Shop shop = shopRepository.findBySubdomain(subdomain).orElseThrow(()->new AppException("shop not found"));
+    public OrderResponse placeOrder(UUID customerId, String subdomain) {
+        ShopCustomer shopCustomer = shopCustomerRepository.findById(customerId).orElseThrow(() -> new AppException("user not found", 404));
+        Shop shop = shopRepository.findBySubdomain(subdomain).orElseThrow(() -> new AppException("shop not found", 404));
+        List<CartItem> cart = cartItemRepository.findAllByShopCustomerAndShop(shopCustomer, shop);
+        if (cart.isEmpty()) {
+            throw new AppException("Cart cant be empty", 400);
+        }
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for (CartItem item : cart) {
+            if (item.getQuantity() > item.getProduct().getStockQuantity() || item.getQuantity() <= 0) {
+                throw new AppException("Not enough stock available", 409);
+            }
+            totalPrice = totalPrice.add(item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
+        }
+        Order order = new Order();
+        order.setShop(shop);
+        order.setShopCustomer(shopCustomer);
+        order.setStatus(Status.PENDING);
+        order.setTotalPrice(totalPrice);
+        Order savedOrder = orderRepository.save(order);
+        List<OrderItem> orderItems = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
+        for (CartItem item : cart) {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(savedOrder);
+            orderItem.setProduct(item.getProduct());
+            orderItem.setQuantity(item.getQuantity());
+            orderItem.setUnitPrice(item.getProduct().getPrice());
+            orderItemRepository.save(orderItem);
+            orderItems.add(orderItem);
+            item.getProduct().setSold(item.getProduct().getSold() + item.getQuantity());
+            item.getProduct().setStockQuantity(item.getProduct().getStockQuantity() - item.getQuantity());
+            products.add(item.getProduct());
+        }
+        productRepository.saveAll(products);
+        cartItemRepository.deleteAll(cart);
+        return mapToResponse(savedOrder, orderItems);
+    }
+    public List<OrderResponse> getOrderHistory(UUID customerId, String subdomain){
+        ShopCustomer customer = shopCustomerRepository.findByIdAndShopSubdomain(customerId,subdomain).orElseThrow(()->new AppException("forbidden",403));
+        List<Order> orders = orderRepository.findAllByShopCustomer(customer);
+        List<OrderItem> allItems = orderItemRepository.findAllByOrderIn(orders);
+        Map<UUID, List<OrderItem>> itemsByOrder = allItems.stream()
+                .collect(Collectors.groupingBy(item -> item.getOrder().getOrderId()));
+        List<OrderResponse> response = new ArrayList<>();
+        for(Order order : orders){
+            List<OrderItem> items = itemsByOrder.getOrDefault(order.getOrderId(), new ArrayList<>());
+            response.add(mapToResponse(order, items));;
+        }
+        return response;
     }
 }
