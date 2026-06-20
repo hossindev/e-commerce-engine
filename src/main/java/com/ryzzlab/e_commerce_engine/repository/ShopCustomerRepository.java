@@ -10,4 +10,5 @@ import java.util.UUID;
 public interface ShopCustomerRepository extends JpaRepository<ShopCustomer, UUID> {
 
     Optional<ShopCustomer> findByEmailAndShop(String email, Shop shop);
+    Optional<ShopCustomer> findByIdAndShopSubdomain(UUID customerId,String subdomain);
 }
