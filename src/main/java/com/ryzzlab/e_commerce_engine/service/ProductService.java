@@ -5,9 +5,7 @@ import com.ryzzlab.e_commerce_engine.entity.Product;
 import com.ryzzlab.e_commerce_engine.entity.Shop;
 import com.ryzzlab.e_commerce_engine.entity.User;
 import com.ryzzlab.e_commerce_engine.exception.AppException;
-import com.ryzzlab.e_commerce_engine.repository.ProductRepository;
-import com.ryzzlab.e_commerce_engine.repository.ShopRepository;
-import com.ryzzlab.e_commerce_engine.repository.UserRepository;
+import com.ryzzlab.e_commerce_engine.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +20,8 @@ public class ProductService {
     @Autowired
     private ShopRepository shopRepository;
     @Autowired
-    private UserRepository userRepository;
+    private OrderItemRepository orderItemRepository;
+
     private ProductResponse mapToResponse(Product product){
         ProductResponse response = new ProductResponse();
         response.setProductId(product.getProductId());
@@ -72,8 +71,13 @@ public class ProductService {
     }
 
     public void deleteProduct(UUID userId, UUID productId){
-        Product product = productRepository.findById(productId).orElseThrow(()-> new AppException("Product not found",404));
-        if(!product.getShop().getUser().getUserId().equals(userId)) throw new AppException("Forbidden", 403);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new AppException("Product not found", 404));
+        if(!product.getShop().getUser().getUserId().equals(userId))
+            throw new AppException("Forbidden", 403);
+        if (orderItemRepository.existsByProduct(product)) {
+            throw new AppException("Cannot delete a product that has existing orders", 409);
+        }
         productRepository.delete(product);
     }
     public List<ProductResponse> getShopProducts(String subdomain){
