@@ -4,9 +4,12 @@ import com.ryzzlab.e_commerce_engine.entity.ShopCustomer;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 public class AddressResponse {
+    private UUID addressId;
     private String street;
     private String city;
     private String postalCode;

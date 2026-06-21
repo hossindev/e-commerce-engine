@@ -29,6 +29,7 @@ public class AddressService {
     private ShopRepository shopRepository;
     private AddressResponse mapToResponse(Address address){
         AddressResponse response = new AddressResponse();
+        response.setAddressId(address.getAddressId());
         response.setStreet(address.getStreet());
         response.setCity(address.getCity());
         response.setPostalCode(address.getPostalCode());
