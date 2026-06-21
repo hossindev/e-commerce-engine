@@ -103,4 +103,26 @@ public class OrderService {
         }
         return response;
     }
+    public List<OrderResponse> getShopOrders(UUID userId,String subdomain){
+        Shop shop = shopRepository.findBySubdomain(subdomain).orElseThrow(()->new AppException("Shop not found",404));
+        if(!shop.getUser().getUserId().equals(userId)) throw new AppException("forbidden",403);
+        List<Order> orders = orderRepository.findAllByShop(shop);
+        List<OrderItem> allItems = orderItemRepository.findAllByOrderIn(orders);
+        Map<UUID,List<OrderItem>> itemsByOrder = allItems.stream()
+                .collect(Collectors.groupingBy(item -> item.getOrder().getOrderId()));
+        List<OrderResponse> responses = new ArrayList<>();
+        for(Order order : orders){
+            List<OrderItem> items = itemsByOrder.getOrDefault(order.getOrderId(), new ArrayList<>());
+            responses.add(mapToResponse(order,items));
+        }
+        return responses;
+    }
+    public OrderResponse updateOrderStatus(UUID userId,UUID orderId,Status newStatus){
+        Order order = orderRepository.findById(orderId).orElseThrow(()->new AppException("Order not found",404));
+        if(!order.getShop().getUser().getUserId().equals(userId)) throw new AppException("forbidden",403);
+        order.setStatus(newStatus);
+        orderRepository.save(order);
+        List<OrderItem> items = orderItemRepository.findAllByOrder(order);
+        return mapToResponse(order,items);
+    }
 }
