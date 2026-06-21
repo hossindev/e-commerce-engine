@@ -17,10 +17,10 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
     @PostMapping("/checkout/{subdomain}")
-    public ResponseEntity<?> checkout(Principal principal, @PathVariable String subdomain){
+    public ResponseEntity<?> checkout(Principal principal, @PathVariable String subdomain, UUID addressId){
         try{
             UUID customerId = UUID.fromString(principal.getName());
-            return ResponseEntity.ok(orderService.placeOrder(customerId,subdomain));
+            return ResponseEntity.ok(orderService.placeOrder(customerId,subdomain,addressId));
         }
         catch (AppException e){
             return ResponseEntity.status(e.getStatus()).body(e.getMessage());

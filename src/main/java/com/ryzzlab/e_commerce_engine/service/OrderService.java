@@ -30,7 +30,8 @@ public class OrderService {
     private OrderItemRepository orderItemRepository;
     @Autowired
     private ProductRepository productRepository;
-
+    @Autowired
+    private AddressRepository addressRepository;
     private OrderItemResponse mapToOrderItemResponse(OrderItem item) {
         OrderItemResponse response = new OrderItemResponse();
         response.setProductName(item.getProduct().getName());
@@ -52,7 +53,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse placeOrder(UUID customerId, String subdomain) {
+    public OrderResponse placeOrder(UUID customerId, String subdomain,UUID addressId) {
         ShopCustomer shopCustomer = shopCustomerRepository.findById(customerId).orElseThrow(() -> new AppException("user not found", 404));
         Shop shop = shopRepository.findBySubdomain(subdomain).orElseThrow(() -> new AppException("shop not found", 404));
         List<CartItem> cart = cartItemRepository.findAllByShopCustomerAndShop(shopCustomer, shop);
@@ -71,6 +72,7 @@ public class OrderService {
         order.setShopCustomer(shopCustomer);
         order.setStatus(Status.PENDING);
         order.setTotalPrice(totalPrice);
+        order.setAddress(addressRepository.findById(addressId).orElseThrow(()->new AppException("address not set",400)));
         Order savedOrder = orderRepository.save(order);
         List<OrderItem> orderItems = new ArrayList<>();
         List<Product> products = new ArrayList<>();
