@@ -57,6 +57,16 @@ public class AddressController {
             return ResponseEntity.status(e.getStatus()).body(e.getMessage());
         }
     }
+    @GetMapping("/get/all/{subdomain}")
+    public ResponseEntity<?> getAllAddresses(Principal principal,@PathVariable String subdomain){
+        try{
+            UUID customerId = UUID.fromString(principal.getName());
+            return ResponseEntity.ok(addressService.getAllAddresses(customerId,subdomain));
+        }
+        catch (AppException e){
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        }
+    }
     @GetMapping("/get/{subdomain}")
     public ResponseEntity<?> getAddress(Principal principal,@PathVariable String subdomain,UUID addressId){
         try {

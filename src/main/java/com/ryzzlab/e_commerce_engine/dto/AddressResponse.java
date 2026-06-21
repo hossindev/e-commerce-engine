@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AddressResponse {
-    private ShopCustomer shopCustomer;
     private String street;
     private String city;
     private String postalCode;

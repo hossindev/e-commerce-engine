@@ -14,5 +14,5 @@ public class CreateAddressRequest {
     private String city;
     private String postalCode;
     private String country ;
-    private Boolean isDefault = true;
+    private Boolean isDefault;
 }

@@ -25,5 +25,5 @@ public class Address extends BaseEntity {
     private String postalCode;
     @Column(nullable = false)
     private String country ;
-    private boolean isDefault;
+    private Boolean isDefault;
 }
