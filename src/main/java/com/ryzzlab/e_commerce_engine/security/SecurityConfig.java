@@ -32,6 +32,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/shops/{subdomain}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products/shop/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products/{subdomain}/{slug}").permitAll()
+                        .requestMatchers("/api/webhooks/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

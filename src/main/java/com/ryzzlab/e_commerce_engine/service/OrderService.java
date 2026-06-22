@@ -5,6 +5,7 @@ import com.ryzzlab.e_commerce_engine.dto.OrderResponse;
 import com.ryzzlab.e_commerce_engine.entity.*;
 import com.ryzzlab.e_commerce_engine.exception.AppException;
 import com.ryzzlab.e_commerce_engine.repository.*;
+import com.stripe.model.PaymentIntent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,8 @@ public class OrderService {
     private ProductRepository productRepository;
     @Autowired
     private AddressRepository addressRepository;
+    @Autowired
+    private StripeService stripeService;
     private OrderItemResponse mapToOrderItemResponse(OrderItem item) {
         OrderItemResponse response = new OrderItemResponse();
         response.setProductName(item.getProduct().getName());
@@ -67,8 +70,10 @@ public class OrderService {
             }
             totalPrice = totalPrice.add(item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
         }
+        PaymentIntent paymentIntent = stripeService.createAndConfirmPaymentIntent(totalPrice, "pm_card_visa");
         Order order = new Order();
         order.setShop(shop);
+        order.setStripePaymentIntentId(paymentIntent.getId());
         order.setShopCustomer(shopCustomer);
         order.setStatus(Status.PENDING);
         order.setTotalPrice(totalPrice);

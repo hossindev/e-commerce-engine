@@ -29,5 +29,6 @@ public class Order extends BaseEntity {
     private Status status;
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal totalPrice ;
-
+    @Column(nullable = true)
+    private String stripePaymentIntentId;
 }
